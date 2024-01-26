@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport"
+	      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Ava AI assistant</title>
+
+	<link rel="stylesheet" href="css/plugins/simplebar.css">
+	<link rel="stylesheet" href="css/styles.css">
+
+	<script type="text/javascript" src="js/plugins/simplebar.min.js"></script>
+	<script type="text/javascript" src="js/scripts.js"></script>
+
+</head>
+<body>
+
+<div class="ava-page ava-page--chat">
+
+	<div class="chat-container">
+		<div class="chat-header">
+			<img src="images/logo.svg" alt="logo" width="118" class="chat-header__logo">
+			<div class="chat-header__attempts">
+				<p class="attempt-counter">
+					<span class="attempt-counter__caption">Attempt</span>
+					<span class="attempt-counter__current">1</span>/<span class="attempt-counter__total">3</span>
+				</p>
+				<button class="btn-retry-attempt">
+					<img src="images/icon__retry-chat.svg" alt="logo" width="24">
+				</button>
+			</div>
+		</div>
+
+		<div class="flex-row">
+			<div class="doctor-avatar">
+				<div class="doctor-avatar__content">
+					<img src="images/avatar-preview.png" alt="avatar-doctor" width="437" class="doctor-avatar__img">
+					<video src="video/test-video.mp4" controls class="doctor-avatar__video"></video>
+				</div>
+				<div class="avatar-controls">
+					<button class="avatar-controls__mobile-btn"></button>
+					<div class="avatar-controls__content">
+						<div class="avatar-controls__inner">
+							<button class="avatar-controls__min"></button>
+							<div class="avatar-controls__slider" >
+								<div id="volume-progress" class="avatar-controls__slider-fill"></div>
+								<div id="draggable-point" class="avatar-controls__slider-bullet"></div>
+								<input id="volume-range" min="0" max="100" value="30" type="range">
+							</div>
+							<button class="avatar-controls__max"></button>
+						</div>
+						<button class="avatar-controls__content-mute"></button>
+					</div>
+				</div>
+			</div>
+
+			<div class="chat-block">
+				<div class="chat-block__messages">
+					<div class="chat-message">
+						<div class="chat-message__text">Hello, are you a patient?</div>
+					</div>
+					<div class="chat-message chat-message--answer">
+						<div class="chat-message__text">No, I'm not a patient, I represent a pharmaceutical company ХХХ. I want to tell you about a new medicine.</div>
+					</div>
+					<div class="chat-message">
+						<div class="chat-message__text">Oh, it's those medical representatives again! I've already had three today, I'm busy.</div>
+					</div>
+					<div class="chat-message chat-message--answer">
+						<div class="chat-message__text">I'll be quick, our conversation will only take 2 minutes.</div>
+					</div>
+					<div class="chat-message">
+						<div class="chat-message__text">I'll say it again — I don't have time.</div>
+					</div>
+					<div class="chat-message chat-message--answer">
+						<div class="chat-message__text">There are new clinical guidelines for the treatment of patients with ... (disease). You definitely need to know this information. I'm going to give you the basics now.</div>
+					</div>
+					<div class="chat-message">
+						<div class="chat-message__text">All right, talk fast.</div>
+					</div>
+
+					<div class="chat-message">
+						<div class="chat-message__text">Hello, are you a patient?</div>
+					</div>
+					<div class="chat-message chat-message--answer">
+						<div class="chat-message__text">No, I'm not a patient, I represent a pharmaceutical company ХХХ. I want to tell you about a new medicine.</div>
+					</div>
+					<div class="chat-message">
+						<div class="chat-message__text">Oh, it's those medical representatives again! I've already had three today, I'm busy.</div>
+					</div>
+					<div class="chat-message chat-message--answer">
+						<div class="chat-message__text">I'll be quick, our conversation will only take 2 minutes.</div>
+					</div>
+					<div class="chat-message">
+						<div class="chat-message__text">I'll say it again — I don't have time.</div>
+					</div>
+					<div class="chat-message chat-message--answer">
+						<div class="chat-message__text">There are new clinical guidelines for the treatment of patients with ... (disease). You definitely need to know this information. I'm going to give you the basics now.</div>
+					</div>
+					<div class="chat-message">
+						<div class="chat-message__text">All right, talk fast.</div>
+					</div>
+				</div>
+				<div class="chat-block__controls">
+					<div class="chat-block__controls-field">
+						<input class="chat-block__controls-input" type="text" name="textField" value="" placeholder="">
+						<button class="chat-block__controls-send"></button>
+					</div>
+					<button class="chat-block__controls-voice"></button>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+	<div class="popup-wrapper">
+		<div class="popup-block popup-block--1">
+			<img src="images/logo.svg" alt="logo" width="118" class="mx-auto mb-40">
+			<p class="mb-8">You are a medical representative. Your aim is to obtain a doctor’s permission for a visit but the doctor looks tired and a little grumpy. Her answers have a negative tone. You can see that she is not in the mood to communicate with you today, but it is important for you to have  the visit today.</p>
+			<p class="mb-8">The doctor is medium-loyal but high-potential for your company. You've already met several times, but today, unfortunately, she is "in a bad mood" — there's a line of patients and she has no desire to talk to you. Try to persuade her to listen to you.</p>
+			<p class="mr-auto">So, you come into doctor’s office...</p>
+			<button class="btn-ava mx-auto mt-40 popup-close"><span>Enter Ava’s Office</span></button>
+		</div>
+		<div class="popup-block popup-block--2">
+			<img src="images/logo.svg" alt="logo" width="118" class="mx-auto mb-40">
+			<img src="images/retry-preview.svg" alt="logo" width="232" class="mx-auto mb-40">
+			<p class="mb-24 fz-22 fw-semibold">It looks like it was not possible to conduct the visit this time. Don't be disappointed and try again.</p>
+			<hr class="mb-24">
+			<p class="mb-22">It is clear that something new works better, but if there is no news, show that you have prepared information specifically for the doctor on his previous request: "You talked, asked, requested and I found information for you".</p>
+			<p>If you feel confident, use unconventional solutions, for example, bring him a coffee and offer a short pause or intrigue him with the question "do you know how to reduce the frequency of symptoms by 5 times?"</p>
+			<button class="btn-ava mx-auto mt-40 popup-close" data-fn="retryHandler"><span>Retry</span><span class="btn-ava__icon"></span></button>
+		</div>
+	</div>
+
+</div>
+
+</body>
+</html>

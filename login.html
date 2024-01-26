@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport"
+	      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Ava AI assistant</title>
+
+	<link rel="stylesheet" href="css/styles.css">
+	<link rel="stylesheet" href="css/login.css">
+
+	<script type="text/javascript" src="js/login.js"></script>
+
+</head>
+<body>
+
+<div class="ava-page ava-page--login">
+
+	<div class="login-block">
+		<img src="images/logo.svg" alt="logo">
+		<p class="text-center mt-28 mb-38">Enter the login and password provided to you to begin communicating with the AI assistant</p>
+
+		<form class="form form--login" action="javascript:void(0)">
+
+			<div class="form-group mb-16">
+				<input class="form-control" type="text" value="" name="login" placeholder="Login" required>
+			</div>
+
+			<div class="form-group">
+				<input class="form-control" type="password" value="" name="password" placeholder="Password" required>
+			</div>
+
+			<div class="form-group form-group--checkbox mt-26 mx-auto">
+				<label for="agreement">
+					<input class="form-control" type="checkbox" value="Y" name="agreement" id="agreement" required>
+					<span class="form-control-checkbox"></span>
+					<span>I consent to the personal data provided in this form</span>
+				</label>
+			</div>
+
+			<p class="form-message mt-26"></p>
+
+			<button class="btn-ava mt-48 mx-auto"><span>Start communicate with Ava</span></button>
+
+		</form>
+
+	</div>
+
+</div>
+
+</body>
+</html>

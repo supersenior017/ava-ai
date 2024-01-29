@@ -231,6 +231,7 @@ body {
     @include phone {
       padding-top: 16px;
       position: relative;
+      z-index: 1;
 
       .attempt-counter__caption {
         display: none;
@@ -289,16 +290,23 @@ body {
     flex-shrink: 0.5;
     max-width: 50%;
 
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
     .doctor-avatar__content {
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
       align-items: center;
 
-      max-width: 436px;
+      max-width: 380px;
       width: 100%;
-      height: 100%;
+      height: auto;
       flex-shrink: 1;
+
+      margin-top: auto;
 
       position: relative;
       &:after {
@@ -312,6 +320,31 @@ body {
 
         background: rgb(255,255,255);
         background: linear-gradient(0deg, rgb(209 202 208) 0%, rgb(210 201 209) 50%, rgba(255, 255, 255, 0) 100%);
+      }
+
+      &:before {
+        content: '';
+
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        display: flex;
+        aspect-ratio: 632/723;
+        height: auto;
+        width: 164%;
+
+        //background: rgb(255,255,255);
+        //background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0.5467436974789917) 50%, rgba(255,255,255,0) 90%, rgba(255,255,255,0) 100%);
+        //background-size: contain;
+
+        background-image: url('../images/video-bg.svg');
+        background-position: center center;
+        background-size: contain;
+        background-repeat: no-repeat;
+
+
       }
 
       @include phone {
@@ -333,12 +366,22 @@ body {
       position: absolute;
       top: 50%;
       left: 50%;
-
-      width: 300px;
-      height: 100px;
-      opacity: 0.4;
-
       transform: translate(-50%, -50%);
+
+      max-width: 437px;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 546 / 800;
+      opacity: 1;
+
+      position: relative;
+      inset: 0;
+      transform: none;
+      height: auto;
+
+      background: transparent;
+      border: none;
+
     }
 
     .avatar-controls {

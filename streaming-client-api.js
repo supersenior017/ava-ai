@@ -142,7 +142,7 @@ connectButton.onclick = async () => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      source_url: "https://i.postimg.cc/P5mmSy0v/lady.jpg",
+      source_url: "https://iili.io/Jc4b0Wg.md.jpg",
     }),
   });
 
@@ -224,7 +224,7 @@ async function processTalk(msg) {
               // type: 'microsoft',
               // voice_id: 'en-US-JennyNeural',
               type: 'elevenlabs',
-              voice_id: 'pFZP5JQG7iQjIQuC4Bku'
+              voice_id: 'oWAxZDx7w5VEj9dCyTzz'
             },
             ssml: 'false',
             input: responseFromOpenAI_message, //send the openAIResponse to D-id

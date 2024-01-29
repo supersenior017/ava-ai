@@ -11,9 +11,10 @@ let DEEPGRAM_API_KEY = CONFIG.DEEPGRAM_API_KEY;
 const system_prompt = CONFIG.SYSTEM_PROMPT;
 
 let messages = [{ role: "system", content: system_prompt }];
+console.log('message was initialized');
+console.log(messages);
 
 async function fetchOpenAIResponse(userMessage) {
-  messages.push({ role: "user", content: userMessage });
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -21,10 +22,9 @@ async function fetchOpenAIResponse(userMessage) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "gpt-3.5-turbo-1106",
+      model: "gpt-4-1106-preview",
       messages: messages,
       temperature: 0.7,
-      max_tokens: 100,
     }),
   });
 
@@ -84,6 +84,7 @@ const initDeepgram = (dg) => {
 };
 
 const talkVideo = document.getElementById("talk-video");
+const idleVideo = document.getElementById('idle-video');
 talkVideo.setAttribute("playsinline", "");
 const peerStatusLabel = document.getElementById("peer-status-label");
 const iceStatusLabel = document.getElementById("ice-status-label");
@@ -193,9 +194,17 @@ async function processTalk(msg) {
   ) {
     //
     // Get the user input from the text input field get ChatGPT Response
-    const responseFromOpenAI = await fetchOpenAIResponse(msg);
+    // messages.push({ role: "user", content: msg })
+    console.log(msg);
+    messages.push({ role: "user", content: msg });
+    console.log("processTalk", messages);
+    const responseFromOpenAI = await fetchOpenAIResponse(messages);
     messages.push({ role: "assistant", content: responseFromOpenAI });
-    //
+    var parts = responseFromOpenAI.split('\n');
+    const responseFromOpenAI_emotion = parts[0].split(';')[1].trim();
+    const responseFromOpenAI_message = parts[1];
+    console.log("emotion:", responseFromOpenAI_emotion);
+    // console.log("message:", responseFromOpenAI_message);
     // Print the openAIResponse to the console
     console.log("Chatting history:", messages);
     //
@@ -209,36 +218,28 @@ async function processTalk(msg) {
         },
         body: JSON.stringify({
           script: {
-            type: "text",
-            subtitles: "false",
+            type: 'text',
+            subtitles: 'false',
             provider: {
-              type: "microsoft",
-              voice_id: "en-US-ChristopherNeural",
+              // type: 'microsoft',
+              // voice_id: 'en-US-JennyNeural',
+              type: 'elevenlabs',
+              voice_id: 'pFZP5JQG7iQjIQuC4Bku'
             },
-            ssml: false,
-            input: responseFromOpenAI, //send the openAIResponse to D-id
+            ssml: 'false',
+            input: responseFromOpenAI_message, //send the openAIResponse to D-id
           },
           config: {
             fluent: true,
-            pad_audio: 0,
+            pad_audio: 1,
             driver_expressions: {
               expressions: [
-                { expression: "neutral", start_frame: 0, intensity: 0 },
-              ],
-              transition_frames: 0,
+                { expression: 'happy', start_frame: 0, intensity: 1 }],
+              // transition_frames: 10
             },
-            align_driver: true,
-            align_expand_factor: 0,
-            auto_match: true,
-            motion_factor: 0,
-            normalization_factor: 0,
-            sharpen: true,
             stitch: true,
-            result_format: "mp4",
-          },
-          driver_url: "bank://lively/",
-          config: {
-            stitch: true,
+            sharpen: false,
+
           },
           session_id: sessionId,
         }),
@@ -321,8 +322,12 @@ function onVideoStatusChange(videoIsPlaying, stream) {
     status = "streaming";
     const remoteStream = stream;
     setVideoElement(remoteStream);
+    playVideo();
+    hideIdleVideo();
+
   } else {
     status = "empty";
+    hideVideo();
     playIdleVideo();
   }
   streamingStatusLabel.innerText = status;
@@ -407,15 +412,44 @@ function setVideoElement(stream) {
   if (talkVideo.paused) {
     talkVideo
       .play()
-      .then((_) => {})
-      .catch((e) => {});
+      .then((_) => { })
+      .catch((e) => { });
   }
 }
-
+function playVideo() {
+  // talkVideo.srcObject = undefined;
+  // talkVideo.src = "neutral_sharpen_false.mp4";
+  // talkVideo.loop = true;
+  console.log('play idle video')
+  talkVideo.style.transition = 'opacity 0.1s ease-in-out';
+  talkVideo.style.opacity = 1;
+}
+function hideVideo() {
+  console.log('hide  video')
+  // talkVideo.srcObject = undefined;
+  // talkVideo.src = "neutral_sharpen_false.mp4";
+  // talkVideo.loop = true;
+  talkVideo.style.transition = 'opacity 0.4s ease-in-out';
+  talkVideo.style.opacity = 0;
+  idleVideo.currentTime = 0;
+}
 function playIdleVideo() {
-  talkVideo.srcObject = undefined;
-  talkVideo.src = "idle.mp4";
-  talkVideo.loop = true;
+  // talkVideo.srcObject = undefined;
+  // talkVideo.src = "neutral_sharpen_false.mp4";
+  // talkVideo.loop = true;
+  console.log('play idle video')
+  idleVideo.style.transition = 'opacity 0.1s ease-in-out';
+  // idleVideo.currentTime= 0;
+  idleVideo.style.opacity = 1;
+}
+function hideIdleVideo() {
+  // talkVideo.srcObject = undefined;
+  // talkVideo.src = "neutral_sharpen_false.mp4";
+  // talkVideo.loop = true;
+  console.log('hide idle video')
+  idleVideo.style.transition = 'opacity 0.4s ease-in-out';
+  // idleVideo.style.zIndex = talkVideo.style.zIndex
+  idleVideo.style.opacity = 0;
 }
 
 function stopRecording() {

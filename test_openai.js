@@ -2,11 +2,12 @@ const config = require('./config.json');
 
 const OPENAI_API_KEY = config.OPENAI_API_KEY;
 const OPENAI_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
+const system_prompt = config.SYSTEM_PROMPT;
 
 async function main() {
     const fetch = await import('node-fetch').then(module => module.default);
 
-    async function fetchOpenAIResponse(prompt) {
+    async function fetchOpenAIResponse(userMessage) {
         const response = await fetch(OPENAI_ENDPOINT, {
             method: 'POST',
             headers: {
@@ -14,8 +15,11 @@ async function main() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                model: "gpt-3.5-turbo",
-                messages: [{"role": "user", "content": prompt}],
+                model: "gpt-3.5-turbo-1106",
+                messages: [
+                    { role: "system", content: system_prompt },
+                    { role: "user", content: userMessage },
+                  ],
                 temperature: 0.7
             }),
         });

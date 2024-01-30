@@ -108,32 +108,9 @@ connectButton.onclick = async () => {
   stopAllStreams();
   closePC();
 
-  navigator.mediaDevices
-    .getUserMedia({ audio: true })
-    .then(async (stream) => {
-      if (!MediaRecorder.isTypeSupported("audio/webm")) {
-        return alert(
-          "iOS / Safari Browser not supported. Please use Chrome or Firefox on Desktop or use Android."
-        );
-      }
-
-      dg_client = createNewDeepgram();
+  dg_client = createNewDeepgram();
       initDeepgram(dg_client);
-
-      mediaRecorder = new MediaRecorder(stream, {
-        mimeType: "audio/webm",
-      });
-
-      mediaRecorder.start(250);
-
-      mediaRecorder.addEventListener("dataavailable", async (event) => {
-        if (event.data.size > 0) dgPacketResponse(event.data, dg_client_live);
-      });
-    })
-    .catch((err) => {
-      console.log("error on media recorder: ", err);
-      alert("Can't find Media device or Permission denied!");
-    });
+  
 
   const sessionResponse = await fetch(`${DID_API.url}/talks/streams`, {
     method: "POST",
@@ -179,6 +156,33 @@ connectButton.onclick = async () => {
       }),
     }
   );
+
+  navigator.mediaDevices
+    .getUserMedia({ audio: true })
+    .then(async (stream) => {
+      if (!MediaRecorder.isTypeSupported("audio/webm")) {
+        return alert(
+          "iOS / Safari Browser not supported. Please use Chrome or Firefox on Desktop or use Android."
+        );
+      }
+
+      
+
+      mediaRecorder = new MediaRecorder(stream, {
+        mimeType: "audio/webm",
+      });
+
+      mediaRecorder.start(250);
+
+      mediaRecorder.addEventListener("dataavailable", async (event) => {
+        if (event.data.size > 0) dgPacketResponse(event.data, dg_client_live);
+      });
+    })
+    .catch((err) => {
+      console.log("error on media recorder: ", err);
+      alert("Can't find Media device or Permission denied!");
+      stopRecording();
+    });
 };
 
 const talkButton = document.getElementById("talk-button");
@@ -201,7 +205,7 @@ async function processTalk(msg) {
     const responseFromOpenAI = await fetchOpenAIResponse(messages);
     messages.push({ role: "assistant", content: responseFromOpenAI });
     var parts = responseFromOpenAI.split('\n');
-    const responseFromOpenAI_emotion = parts[0].split(';')[1].trim();
+    const responseFromOpenAI_emotion = parts[0].split(';')[1]?.trim();
     const responseFromOpenAI_message = parts[1];
     console.log("emotion:", responseFromOpenAI_emotion);
     // console.log("message:", responseFromOpenAI_message);
@@ -447,7 +451,7 @@ function hideIdleVideo() {
   // talkVideo.src = "neutral_sharpen_false.mp4";
   // talkVideo.loop = true;
   console.log('hide idle video')
-  idleVideo.style.transition = 'opacity 0.4s ease-in-out';
+  idleVideo.style.transition = 'opacity 0.6s ease-in-out';
   // idleVideo.style.zIndex = talkVideo.style.zIndex
   idleVideo.style.opacity = 0;
 }

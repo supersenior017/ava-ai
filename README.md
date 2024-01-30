@@ -63,7 +63,8 @@ Staging is located at Ubuntu server, IP 188.166.121.50.
 
 ## How to Run
 
-1. Change <api_key_here> to valid api keys in `api.json` and `config.json`
-2. Run `npm install` or `yarn install` and `npm run dev` or `yarn dev`
-3. Open `localhost:3000` in the browser
+1. copy config.sample.json and api.sample.json and rename config.json and api.json
+2. Change <OPENAI_API_KEY>, <DID_API> and <DEEPGRAM_API_KEY> to valid api keys in `api.json` and `config.json`
+3. Run `npm install` or `yarn install` and `npm run dev` or `yarn dev`
+4. Open `localhost:3000` in the browser
 

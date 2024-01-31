@@ -4,7 +4,7 @@
 
         <div class="chat-container">
             <div class="chat-header">
-                <img src="images/logo.svg" alt="logo" width="118" class="chat-header__logo">
+                <img src="images/logo.svg" alt="logo" width="118" class="chat-header__logo" @click="incrementdebugMode()">
                 <div class="chat-header__attempts">
                     <p class="attempt-counter">
                         <span class="attempt-counter__caption">Attempt</span>
@@ -105,11 +105,15 @@
 
 
 
-        <div id="content" style="display: none">
+        <div id="content" :style="debugMode >= 4 ? 'display: block':'display: none'">
 
             <br />
             <div id="input-container" style="display: block">
-                <input type="text" id="user-input-field" placeholder="I am your ChatGPT Live Agent..." />
+                <input
+                    type="text"
+                    id="user-input-field"
+                    placeholder="GPT TEST MSG FIELD"
+                />
                 <hr />
 
             </div>
@@ -181,7 +185,7 @@ let OPENAI_API_KEY = CONFIG.OPENAI_API_KEY;
 let DEEPGRAM_API_KEY = CONFIG.DEEPGRAM_API_KEY;
 let { GPT_MODEL } = CONFIG;
 const system_prompt = CONFIG.SYSTEM_PROMPT;
-const disableDID = true;
+const disableDID = ref(false);
 
 
 
@@ -202,12 +206,31 @@ async function processTalk(msg) {
     // You can get the expression of Doctor
 
         const responseFromOpenAI_message = parts[1];
+      
+       
+        //
+        // if(responseFromOpenAI != 'Hello, are you a patient?'){
+        //     console.log(responseFromOpenAI);
+        //     var parts = responseFromOpenAI.split('\n');
+        //     const responseFromOpenAI_emotion = parts[0].split(';')[1]?.trim();
+        //     const responseFromOpenAI_message = parts[1];
+        //     addEmotion(responseFromOpenAI_emotion);
+        //     addChatMessage({ role: "assistant", content: responseFromOpenAI_message})
+        // }
+        // else{
+        //     addChatMessage({ role: "assistant", content: responseFromOpenAI})
+        // }
+
+
+
         //
         // Print the openAIResponse to the console
         console.log("Chatting history:", chatMessages);
 
 
-        if (!disableDID) {
+
+        if(debugMode.value<4){
+            console.log('DID start');
             const talkResponse = await fetch(
                 `${DID_API.url}/talks/streams/${streamId}`,
                 {
@@ -221,10 +244,8 @@ async function processTalk(msg) {
                             type: 'text',
                             subtitles: 'false',
                             provider: {
-                                // type: 'microsoft',
-                                // voice_id: 'en-US-JennyNeural',
-                                type: 'elevenlabs',
-                                voice_id: 'oWAxZDx7w5VEj9dCyTzz'
+                                type: "elevenlabs",
+                                voice_id: "oWAxZDx7w5VEj9dCyTzz",
                             },
                             ssml: 'false',
                             input: responseFromOpenAI_message, //send the openAIResponse to D-id
@@ -269,7 +290,7 @@ function clearUserMessage() {
 let talkVideo;
 
 async function fetchOpenAIResponse(userMessage) {
-    addChatMessage({ role: "user", content: userMessage });
+    addChatMessage({ role: "user", content: userMessage, emotion: null });
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -556,7 +577,8 @@ let makeConnection;
 
 
 
-const attempts = ref(0)
+const attempts = ref(0);
+const debugMode = ref(0);
 const maxAttempts = 3;
 
 
@@ -564,12 +586,27 @@ function increment() {
     attempts.value++
 }
 
-const chatMessages = reactive([{ role: 'system', content: system_prompt }]);
 
-function addChatMessage(newMessage) {
-    // if(newMessage.role !== 'system'){
-    const newItem = { role: newMessage.role, content: newMessage.content }
-    chatMessages.push(newItem);
+const chatMessages = reactive([ {role: 'system', content: system_prompt}]);
+const emotion = ref('');
+function addEmotion(aiEmotion) {
+    emotion.value = aiEmotion;
+}
+
+function incrementdebugMode() {
+    debugMode.value++
+    if(debugMode>=4){
+        disableDID.value = true;
+    }
+}
+
+
+
+
+function addChatMessage (newMessage){
+   // if(newMessage.role !== 'system'){
+        const newItem = { role: newMessage.role, content: newMessage.content}
+        chatMessages.push(newItem);
 
     //}
 }
@@ -820,6 +857,7 @@ onMounted(() => {
         stopRecording();
         stopAllStreams();
         closePC();
+
         document.getElementById('user-input').focus();
         dg_client = createNewDeepgram();
         initDeepgram(dg_client);

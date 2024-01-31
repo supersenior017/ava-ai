@@ -7905,6 +7905,7 @@ body.scroll-lock {
   height: 100%;
   flex-shrink: 1;
   position: relative;
+  mix-blend-mode: lighten;
 }
 .ava-page .doctor-avatar .doctor-avatar__content:after {
   position: absolute;

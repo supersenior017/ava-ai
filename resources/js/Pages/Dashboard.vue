@@ -1,3 +1,21 @@
+<style>
+
+#idle-video {
+    position: absolute;
+    display: block;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+    z-index: 4;
+}
+
+#talk-video{
+    z-index: 5;
+    display: block;
+    opacity: 0;
+}
+
+</style>
+
 
 <template>
     <div class="ava-page ava-page--chat">
@@ -6,11 +24,10 @@
             <div class="chat-header">
                 <img src="images/logo.svg" alt="logo" width="118" class="chat-header__logo" @click="incrementdebugMode()">
                 <div class="chat-header__attempts">
-                    <p class="attempt-counter">
-                        <span class="attempt-counter__caption">Attempt</span>
-                        <span class="attempt-counter__current" v-html="attempts"></span>/<span
-                            class="attempt-counter__total">3</span>
-                    </p>
+<!--                    <p class="attempt-counter">-->
+<!--                        <span class="attempt-counter__caption">Attempt</span>-->
+<!--                        <span class="attempt-counter__current" v-html="attempts"></span>/<span class="attempt-counter__total">3</span>-->
+<!--                    </p>-->
                     <button class="btn-retry-attempt">
                         <img src="images/icon__retry-chat.svg" alt="logo" width="24">
                     </button>
@@ -20,9 +37,13 @@
             <div class="flex-row">
                 <div class="doctor-avatar">
                     <div class="doctor-avatar__content">
-                        <!--                        <img src="images/avatar-preview.png" alt="avatar-doctor" width="437" class="doctor-avatar__img">-->
-                        <video id="talk-video" width="400" height="400" autoplay loop class="doctor-avatar__video_new"></video>
-                        <video id="idle-video" width="400" height="400" autoplay loop muted class="doctor-avatar__video_new" src="/video/idle.mp4"></video>
+<!--                        <video id="talk-video" autoplay loop  class="doctor-avatar__video_new"></video>-->
+
+
+                        <video id="talk-video"  autoplay loop class="doctor-avatar__video_new"></video>
+                        <video id="idle-video"  autoplay loop muted class="doctor-avatar__video_new" src="/video/idle.mp4"></video>
+
+
                     </div>
                     <div class="avatar-controls">
                         <button class="avatar-controls__mobile-btn"></button>
@@ -45,11 +66,9 @@
                     <div class="chat-block__messages">
 
                         <div class="chat-block--holder" style="width: 100%">
-                            <div v-for="(message, index)  in chatMessages" class="chat-message--item-holder">
-                                <div class="chat-message" :class="message.role == 'user' ? ' chat-message--answer' : null"
-                                    v-if="message.role !== 'system'">
-                                    <div class="chat-message__text" v-if="message.role !== 'system'"
-                                        v-html="message.content"></div>
+                            <div  v-for="(message, index)  in chatMessages" class="chat-message--item-holder">
+                                <div class="chat-message" :class="message.role == 'user' ? ' chat-message--answer' : null " v-if="message.role !== 'system' ">
+                                    <div class="chat-message__text" v-if="message.role !== 'system'" v-html="formatMessage(message.content)"></div>
                                 </div>
                             </div>
                         </div>
@@ -64,7 +83,7 @@
                                 <button class="chat-block__controls-send"></button>
                             </form>
                         </div>
-                        <button class="chat-block__controls-voice" @click="increment"></button>
+                        <button class="chat-block__controls-voice"></button>
                     </div>
                 </div>
 
@@ -92,14 +111,9 @@
                 <p class="mb-24 fz-22 fw-semibold">It looks like it was not possible to conduct the visit this time. Don't
                     be disappointed and try again.</p>
                 <hr class="mb-24">
-                <p class="mb-22">It is clear that something new works better, but if there is no news, show that you have
-                    prepared information specifically for the doctor on his previous request: "You talked, asked, requested
-                    and I found information for you".</p>
-                <p>If you feel confident, use unconventional solutions, for example, bring him a coffee and offer a short
-                    pause or intrigue him with the question "do you know how to reduce the frequency of symptoms by 5
-                    times?"</p>
-                <button class="btn-ava mx-auto mt-40 popup-close" data-fn="retryHandler"
-                    :href="'dashboard'"><span>Retry</span><span class="btn-ava__icon"></span></button>
+                <p class="mb-22">It is clear that something new works better, but if there is no news, show that you have prepared information specifically for the doctor on his previous request: "You talked, asked, requested and I found information for you".</p>
+                <p>If you feel confident, use unconventional solutions, for example, bring him a coffee and offer a short pause or intrigue him with the question "do you know how to reduce the frequency of symptoms by 5 times?"</p>
+                <button class="btn-ava mx-auto mt-40 popup-close" data-fn="retryHandler" onclick="window.location.reload();"><span>Retry</span><span class="btn-ava__icon"></span></button>
             </div>
         </div>
 
@@ -189,6 +203,7 @@ const disableDID = ref(false);
 
 
 
+
 async function processTalk(msg) {
     if (
         peerConnection?.signalingState === "stable" ||
@@ -265,6 +280,7 @@ async function processTalk(msg) {
                         session_id: sessionId,
                     }),
                 }
+
             );
 
         }
@@ -273,10 +289,14 @@ async function processTalk(msg) {
 }
 
 
+
 const userMessage = ref('');
+function formatMessage(message) {
+    return  message.split('\n')[1] || message;
+}
+function sendMessage(e){
 
-function sendMessage(e) {
-
+function sendMessage(e){
     e.preventDefault();
     processTalk(userMessage.value)
     clearUserMessage();
@@ -301,7 +321,7 @@ async function fetchOpenAIResponse(userMessage) {
             model: GPT_MODEL,
             messages: chatMessages,
             temperature: 0.7,
-            max_tokens: 100,
+            // max_tokens: 100,
         }),
     });
 
@@ -580,7 +600,7 @@ let makeConnection;
 const attempts = ref(0);
 const debugMode = ref(0);
 const maxAttempts = 3;
-
+const seriousEmotion = ref(0);
 
 function increment() {
     attempts.value++
@@ -595,11 +615,37 @@ function addEmotion(aiEmotion) {
 
 function incrementdebugMode() {
     debugMode.value++
-    if(debugMode>=4){
-        disableDID.value = true;
-    }
 }
 
+function nextAttempt(){
+
+    //TODO remove hardcode
+    document.querySelector('.btn-retry-attempt').click();
+    // document.get
+    //
+    // increment();
+    // seriousEmotion.value = 0;
+    //
+    // chatMessages.splice(0,chatMessages.length);
+    // chatMessages.push([{role: 'system', content: system_prompt}]);
+
+    //popupWindowsInstance.show('.popup-block--2');
+}
+
+
+function attemptsEmotionCheck(message){
+
+    let emotion = (message.match(/Emotion;\s*([^\s;]+)/) || [])[1];
+    console.log(emotion);
+    if(emotion === 'serious'){
+        seriousEmotion.value ++;
+    }
+    if(seriousEmotion.value > 4){
+        nextAttempt();
+    }
+
+
+}
 
 
 
@@ -607,7 +653,9 @@ function addChatMessage (newMessage){
    // if(newMessage.role !== 'system'){
         const newItem = { role: newMessage.role, content: newMessage.content}
         chatMessages.push(newItem);
-
+        if(newMessage.role === 'assistant'){
+            attemptsEmotionCheck(newItem.content);
+        }
     //}
 }
 
@@ -831,7 +879,6 @@ onMounted(() => {
 
 
 
-
     talkVideo = document.getElementById("talk-video");
     let idleVideo = document.getElementById('idle-video');
     talkVideo.setAttribute("playsinline", "");
@@ -844,6 +891,45 @@ onMounted(() => {
     const streamingStatusLabel = document.getElementById("streaming-status-label");
 
     const connectButton = document.getElementById("connect-button");
+
+
+    function playVideo() {
+        // talkVideo.srcObject = undefined;
+        // talkVideo.src = "neutral_sharpen_false.mp4";
+        // talkVideo.loop = true;
+        console.log('play idle video')
+        talkVideo.style.transition = 'opacity 0.1s ease-in-out';
+        talkVideo.style.opacity = 1;
+    }
+    function hideVideo() {
+        console.log('hide  video')
+        // talkVideo.srcObject = undefined;
+        // talkVideo.src = "neutral_sharpen_false.mp4";
+        // talkVideo.loop = true;
+        talkVideo.style.transition = 'opacity 0.4s ease-in-out';
+        talkVideo.style.opacity = 0;
+        idleVideo.currentTime = 0;
+    }
+    function playIdleVideo() {
+        // talkVideo.srcObject = undefined;
+        // talkVideo.src = "neutral_sharpen_false.mp4";
+        // talkVideo.loop = true;
+        console.log('play idle video')
+        idleVideo.style.transition = 'opacity 0.1s ease-in-out';
+        // idleVideo.currentTime= 0;
+        idleVideo.style.opacity = 1;
+    }
+    function hideIdleVideo() {
+        // talkVideo.srcObject = undefined;
+        // talkVideo.src = "neutral_sharpen_false.mp4";
+        // talkVideo.loop = true;
+        console.log('hide idle video')
+        idleVideo.style.transition = 'opacity 0.6s ease-in-out';
+        // idleVideo.style.zIndex = talkVideo.style.zIndex
+        idleVideo.style.opacity = 0;
+    }
+
+
 
     makeConnection = async () => {
         if (
@@ -962,15 +1048,22 @@ onMounted(() => {
     function onVideoStatusChange(videoIsPlaying, stream) {
         let status;
         if (videoIsPlaying) {
+
             status = "streaming";
             const remoteStream = stream;
             setVideoElement(remoteStream);
             playVideo();
             hideIdleVideo();
+
+            //
+            // status = "streaming";
+            // const remoteStream = stream;
+            // setVideoElement(remoteStream);
         } else {
             status = "empty";
             hideVideo();
             playIdleVideo();
+
         }
         streamingStatusLabel.innerText = status;
         streamingStatusLabel.className = "streamingState-" + status;
